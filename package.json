@@ -1,0 +1,18 @@
+{
+  "name": "northlight-studio-capstone",
+  "version": "1.0.0",
+  "description": "Fictional IT capstone: static Northlight Studio website, help desk, CRM, automation and tooling.",
+  "private": true,
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node tools/serve.js",
+    "check": "node tools/check-static.js && node tools/check-cloud.js && node tools/check-secrets.js",
+    "test": "playwright test",
+    "pc-health": "node tools/pc-health.js",
+    "network-doctor": "node tools/network-doctor.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
