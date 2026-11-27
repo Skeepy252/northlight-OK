@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Troubleshooting | Northlight Studio</title>
+<meta name="description" content="Interactive network troubleshooting guide: work through connection, IP, router, internet and DNS checks step by step.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="troubleshoot">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">PC and network tools</span>
+    <h1>No internet connection. What should I check?</h1>
+    <p>Follow the network ladder from the bottom up: connection, IP address, router, external connectivity, DNS. The first step that fails points to the likely cause.</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This guide needs JavaScript.</div></noscript>
+    <ol class="steps" id="ladder" aria-label="Network ladder progress"></ol>
+    <div class="card" id="step-card" aria-live="polite"></div>
+    <div class="card">
+      <h2>Run the diagnostics scripts yourself</h2>
+      <p>Two read-only Node.js scripts automate these checks. Run them only on a computer you are authorised to troubleshoot (not on a managed or school machine without permission):</p>
+      <p><code>node tools/network-doctor.js</code> &nbsp; <code>node tools/pc-health.js</code></p>
+      <p class="hint">They never change settings, install updates, change firewall rules or scan networks. Browsers cannot run them: this page cannot inspect your computer.</p>
+    </div>
+  </div>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/troubleshoot.js"></script>
+</body>
+</html>
