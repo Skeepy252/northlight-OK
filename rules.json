@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "description": "Automation rules for Northlight Studio. Rules run in order for each event. 'locked' rules are core and cannot be disabled from the dashboard.",
+  "rules": [
+    {
+      "id": "R1-create-lead",
+      "name": "Create CRM lead",
+      "event": "enquiry.submitted",
+      "enabled": true,
+      "locked": true,
+      "action": { "type": "createLead" }
+    },
+    {
+      "id": "R2-create-ticket",
+      "name": "Create help desk ticket (default P3)",
+      "event": "enquiry.submitted",
+      "enabled": true,
+      "locked": true,
+      "action": { "type": "createTicket", "priority": "P3" }
+    },
+    {
+      "id": "R3-urgent-priority",
+      "name": "Escalate urgent enquiry to P1",
+      "event": "enquiry.submitted",
+      "enabled": true,
+      "condition": {
+        "any": [
+          { "field": "urgency", "op": "equals", "value": "urgent" },
+          { "field": "description", "op": "containsAny", "value": ["urgent", "asap", "immediately", "emergency", "outage"] }
+        ]
+      },
+      "action": { "type": "setTicketPriority", "priority": "P1" }
+    },
+    {
+      "id": "R4-urgent-alert",
+      "name": "Queue urgent alert in outbox (simulated)",
+      "event": "enquiry.submitted",
+      "enabled": true,
+      "condition": {
+        "any": [
+          { "field": "urgency", "op": "equals", "value": "urgent" },
+          { "field": "description", "op": "containsAny", "value": ["urgent", "asap", "immediately", "emergency", "outage"] }
+        ]
+      },
+      "action": {
+        "type": "addOutboxAlert",
+        "to": "it-oncall@northlight.example",
+        "subject": "URGENT enquiry from {{name}} ({{company}})",
+        "body": "Urgent website enquiry {{leadId}} / ticket {{ticketId}} ({{priority}}) about {{service}}. Please respond within the P1 target."
+      }
+    },
+    {
+      "id": "R5-standard-log",
+      "name": "Log standard enquiry activity",
+      "event": "enquiry.submitted",
+      "enabled": true,
+      "condition": {
+        "not": {
+          "any": [
+            { "field": "urgency", "op": "equals", "value": "urgent" },
+            { "field": "description", "op": "containsAny", "value": ["urgent", "asap", "immediately", "emergency", "outage"] }
+          ]
+        }
+      },
+      "action": { "type": "logActivity", "message": "Standard enquiry from {{name}} handled with default priority {{priority}}." }
+    }
+  ]
+}
