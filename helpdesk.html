@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>IT Help Desk | Northlight Studio</title>
+<meta name="description" content="Northlight Studio IT help desk: create, prioritise and resolve support tickets. Fictional demo data.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="helpdesk">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">IT Help Desk</span>
+    <h1>Support tickets</h1>
+    <p>Priority-driven ticket queue with response targets: P1 within 1 hour, P2 within 1 working day, P3 within 3 working days. Website enquiries arrive here automatically.</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
+    <div class="grid" id="ticket-stats"></div>
+    <div class="card">
+      <div class="row between"><h2>Queue</h2>
+        <div class="row"><button class="btn ghost sm" type="button" id="export-tickets">Export tickets</button><button class="btn sm" type="button" id="new-ticket">New ticket</button></div></div>
+      <div class="toolbar" role="search">
+        <div class="field"><label for="f-search">Search</label><input id="f-search" type="search" placeholder="ID, requester or text"></div>
+        <div class="field"><label for="f-status">Status</label><select id="f-status"><option value="">All</option><option>New</option><option>In Progress</option><option>Resolved</option></select></div>
+        <div class="field"><label for="f-priority">Priority</label><select id="f-priority"><option value="">All</option><option>P1</option><option>P2</option><option>P3</option></select></div>
+      </div>
+      <div id="ticket-list" aria-live="polite"></div>
+    </div>
+  </div>
+  <dialog id="ticket-dialog" aria-labelledby="dlg-title"></dialog>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/helpdesk.js"></script>
+</body>
+</html>

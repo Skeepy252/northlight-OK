@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
   if (!url.startsWith(BASE)) { res.writeHead(404); return res.end('Not found (outside base path ' + BASE + ')'); }
   let rel = url.slice(BASE.length) || 'index.html';
   const file = path.resolve(ROOT, rel);
-  if (!file.startsWith(ROOT + path.sep) || !PUBLIC.test(rel.replace(/\/g, '/'))) { res.writeHead(404); return res.end('Not found'); }
+  if (!file.startsWith(ROOT + path.sep) || !PUBLIC.test(rel.split(path.sep).join('/'))) { res.writeHead(404); return res.end('Not found'); }
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404); return res.end('Not found'); }
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
