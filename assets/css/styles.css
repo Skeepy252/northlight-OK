@@ -122,6 +122,9 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
 .tag { font-size: .75rem; font-weight: 700; color: var(--accent-strong); text-transform: uppercase; letter-spacing: .08em; }
 .checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; } .checklist li { padding-left: 30px; position: relative; } .checklist li::before { content: "✓"; position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-strong); font-weight: 700; display: grid; place-items: center; font-size: .8rem; }
 details.faq { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 4px 20px; margin-bottom: 10px; } details.faq summary { cursor: pointer; font-weight: 600; padding: 14px 0; } details.faq p { color: var(--muted); }
+.hero .btn.ghost { color: #fff; border-color: #4a5568; } .hero .btn.ghost:hover { background: rgba(255,255,255,.1); color: #fff; }
+#ticket-stats, #crm-stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.chart-card svg { max-height: 300px; }
 .split { display: grid; gap: 40px; grid-template-columns: 1fr 1fr; align-items: start; } @media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
 
 /* app widgets */
