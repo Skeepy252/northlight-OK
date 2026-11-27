@@ -102,4 +102,61 @@
   }
 
   NL.automation = { processEnquiry, loadRules, validate };
+
+  /* ---------- dashboard (automation.html only) ---------- */
+  if (document.body.dataset.page !== 'automation') return;
+  const { h, $, mount, badge } = NL;
+  let rulesState = { loading: true };
+  const SAMPLES = { standard: { name: 'Sample Visitor', email: 'visitor@sample.example', company: 'Sample Co', service: 'Digital Design and Websites', urgency: 'normal', description: 'Please send a quote for a small marketing website.' },
+    urgent: { name: 'Urgent Visitor', email: 'rush@sample.example', company: 'Rush Co', service: 'Creative Campaigns', urgency: 'urgent', description: 'Our campaign launches tomorrow and we need help immediately.' } };
+
+  function renderStatus() {
+    const s = rulesState;
+    const logs = store.list('logs');
+    mount($('#auto-status'), h('div', { class: 'card' }, h('h2', null, 'Automation status'),
+      s.loading ? h('p', null, 'Loading rules…') : s.error
+        ? [NL.alert('error', 'Automation is NOT active: ' + s.error), h('p', { class: 'hint' }, 'Enquiries are not processed while the configuration is unavailable. Fix rules.json and reload.')]
+        : h('p', null, h('span', { class: 'status-dot', id: 'status-dot' }), h('strong', { id: 'status-text' }, 'Active'), ' · ' + s.rules.length + ' rules loaded from ', h('code', null, 'rules.json'), ' · ' + s.rules.filter(isEnabled).length + ' enabled'),
+      h('p', { class: 'hint' }, logs.length + ' log entries · ' + store.list('outbox').length + ' outbox messages. Simulation only: no email is ever sent.')));
+    mount($('#auto-health'), h('div', { class: 'card' }, h('h2', null, 'Application health'), NL.health
+      ? h('dl', { class: 'kv' }, ['application', 'version', 'buildDate', 'environment'].flatMap((k) => [h('dt', null, k), h('dd', null, NL.health[k])]))
+      : h('p', { class: 'muted' }, 'Health information unavailable.')));
+  }
+  function describe(c) {
+    if (!c) return 'Always runs';
+    if (c.all || c.any) return (c.all ? 'ALL of: ' : 'ANY of: ') + (c.all || c.any).map(describe).join('; ');
+    if (c.not) return 'NOT (' + describe(c.not) + ')';
+    return c.field + ' ' + c.op + ' ' + JSON.stringify(c.value);
+  }
+  function renderRules() {
+    if (!rulesState.rules) return mount($('#auto-rules'), NL.empty('No rules available', 'Rules could not be loaded.'));
+    mount($('#auto-rules'), NL.table([
+      { label: 'Rule ID', render: (r) => h('code', null, r.id) }, { label: 'Name', render: (r) => r.name }, { label: 'Condition', render: (r) => describe(r.condition) }, { label: 'Action', render: (r) => r.action.type },
+      { label: 'State', render: (r) => (isEnabled(r) ? badge('Enabled', 'ok') : badge('Disabled', 'muted')) },
+      { label: 'Toggle', render: (r) => (r.locked ? h('span', { class: 'hint' }, 'Core rule') : h('button', { class: 'btn ghost sm', type: 'button', 'aria-label': (isEnabled(r) ? 'Disable ' : 'Enable ') + r.id, onclick: () => {
+        const off = store.setting('disabledRules', []); store.setSetting('disabledRules', isEnabled(r) ? off.concat(r.id) : off.filter((x) => x !== r.id));
+      } }, isEnabled(r) ? 'Disable' : 'Enable')) }], rulesState.rules, { caption: 'Configured automation rules' }));
+  }
+  function renderOutbox() {
+    const o = store.list('outbox').slice().reverse();
+    mount($('#auto-outbox'), NL.table([{ label: 'Created', render: (m) => NL.fmtDate(m.createdAt) }, { label: 'To', render: (m) => m.to }, { label: 'Subject', render: (m) => m.subject },
+      { label: 'Message', render: (m) => m.body }, { label: 'Rule', render: (m) => m.ruleId }, { label: 'Status', render: (m) => badge(m.status, 'warn') }], o, { caption: 'Simulated outbox', emptyTitle: 'Outbox is empty', emptyText: 'Urgent enquiries queue a simulated alert here. Nothing is ever sent.' }));
+  }
+  function renderLog() {
+    const l = store.list('logs').slice().reverse().slice(0, 50);
+    mount($('#auto-log'), NL.table([{ label: 'Time', render: (e) => NL.fmtDate(e.at) }, { label: 'Result', render: (e) => badge(e.level === 'success' ? 'Success' : e.level === 'error' ? 'Error' : 'Info', e.level === 'success' ? 'ok' : e.level === 'error' ? 'danger' : 'info') },
+      { label: 'Rule', render: (e) => h('code', null, e.ruleId) }, { label: 'Event details', render: (e) => e.message }, { label: 'Submission', render: (e) => e.correlationId || '—' }], l, { caption: 'Recent automation activity', emptyTitle: 'No activity yet', emptyText: 'Submit an enquiry on the home page.' }));
+  }
+  const renderAll = () => { renderStatus(); renderRules(); renderOutbox(); renderLog(); };
+
+  async function runSample(kind) {
+    const r = await NL.automation.processEnquiry(Object.assign({ submissionId: 'sub-' + crypto.randomUUID() }, SAMPLES[kind]));
+    mount($('#auto-result'), r.ok ? NL.alert('success', 'Processed sample enquiry: lead ' + r.lead.id + ', ticket ' + r.ticket.id + ' (' + r.ticket.priority + ')' + (r.alerts.length ? ', alert queued in simulated outbox.' : '.')) : NL.alert('error', r.error));
+  }
+  $('#run-standard').addEventListener('click', () => runSample('standard'));
+  $('#run-urgent').addEventListener('click', () => runSample('urgent'));
+  store.onChange(renderAll);
+  window.addEventListener('nl:health', renderStatus);
+  renderAll();
+  loadRules().then((d) => { rulesState = { rules: d.rules }; }, (e) => { rulesState = { error: e.message }; }).then(renderAll);
 })();

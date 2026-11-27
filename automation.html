@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Automation | Northlight Studio</title>
+<meta name="description" content="Northlight Studio automation dashboard: configuration-driven rules, simulated outbox and execution log. Fictional demo.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="automation">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">Automation engine</span>
+    <h1>Automation dashboard</h1>
+    <p>Rules are read from <code>rules.json</code>. When the website form is submitted the engine creates a CRM lead and a help desk ticket, escalates urgent enquiries and queues a simulated alert.</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
+    <div class="grid two"><div id="auto-status"></div><div id="auto-health"></div></div>
+    <div class="card"><h2>Configured rules</h2><div id="auto-rules"></div></div>
+    <div class="card"><h2>Try it</h2>
+      <p>Send a sample enquiry through the same engine the website uses (creates a real demo lead and ticket in this browser).</p>
+      <div class="row"><button class="btn" type="button" id="run-standard">Send standard sample</button><button class="btn ghost" type="button" id="run-urgent">Send urgent sample</button></div>
+      <div id="auto-result" aria-live="polite"></div></div>
+    <div class="card"><h2>Outbox (simulated)</h2><p class="hint">Alerts queued by automation. This is a demo queue: no email is delivered.</p><div id="auto-outbox"></div></div>
+    <div class="card"><h2>Recent activity</h2><div id="auto-log"></div></div>
+  </div>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/automation.js"></script>
+</body>
+</html>
