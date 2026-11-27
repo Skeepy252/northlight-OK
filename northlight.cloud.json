@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "provider": "azure",
+  "description": "DESCRIPTIVE example only. Nothing here is provisioned; no Azure account, credentials or cost is involved.",
+  "namingConvention": {
+    "pattern": "<type>-<workload>-<component>-<env>",
+    "prefixes": { "resourceGroup": "rg", "webApp": "app", "storageAccount": "st" },
+    "notes": "Storage account names are lowercase letters and digits only (3-24 chars), so hyphens are omitted."
+  },
+  "requiredTags": ["owner", "env", "cost-center"],
+  "resourceGroup": {
+    "name": "rg-northlight-web-prod",
+    "location": "westeurope",
+    "tags": { "owner": "it-team", "env": "prod", "cost-center": "cc-1001" }
+  },
+  "resources": [
+    {
+      "kind": "webApp",
+      "type": "Microsoft.Web/sites",
+      "name": "app-northlight-web-prod",
+      "sku": "B1",
+      "settings": { "httpsOnly": true, "minTlsVersion": "1.2" },
+      "tags": { "owner": "it-team", "env": "prod", "cost-center": "cc-1001" }
+    },
+    {
+      "kind": "storageAccount",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "stnorthlightwebprod",
+      "sku": "Standard_LRS",
+      "settings": { "allowBlobPublicAccess": false, "supportsHttpsTrafficOnly": true },
+      "tags": { "owner": "it-team", "env": "prod", "cost-center": "cc-1001" }
+    }
+  ]
+}
