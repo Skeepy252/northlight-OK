@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Staff Directory | Northlight Studio</title>
+<meta name="description" content="Northlight Studio staff directory with a browser-side identity demo: password hashing, TOTP second step, roles, joiners and leavers.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="staff">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">Identity &amp; access (educational demo)</span>
+    <h1>Staff directory</h1>
+    <p>Sign in with a fictional demo account to see role-based views, a TOTP second step, and the joiner / leaver workflow.</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
+    <div class="alert alert-warn" role="note"><strong>Browser-side demonstration only.</strong> Everything here runs in your browser and can be inspected or edited by anyone using it. It is <em>not</em> real authentication, MFA or access control: genuine identity enforcement must happen on a trusted server or identity platform.</div>
+    <div id="staff-root" aria-live="polite"></div>
+  </div>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/staff.js"></script>
+</body>
+</html>
