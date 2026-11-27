@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>CRM | Northlight Studio</title>
+<meta name="description" content="Northlight Studio mini-CRM: leads, accounts, contacts, opportunity pipeline and customer support cases. Fictional demo data.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="crm">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">Customer relationship management</span>
+    <h1>CRM</h1>
+    <p>Track leads from the website, convert them into accounts, contacts and opportunities, and manage customer support cases.</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
+    <div class="grid" id="crm-stats"></div>
+    <div class="card chart-card"><h2>Opportunities by pipeline stage</h2><div id="crm-chart"></div></div>
+    <div class="card">
+      <div class="tabs" role="tablist" id="crm-tabs"></div>
+      <div class="toolbar" role="search">
+        <div class="field"><label for="c-search">Search</label><input id="c-search" type="search" placeholder="Search this list"></div>
+        <div class="field" id="c-filter-wrap"><label for="c-filter">Filter</label><select id="c-filter"></select></div>
+        <button class="btn sm" type="button" id="c-new">New</button>
+      </div>
+      <div id="crm-list" role="tabpanel" aria-live="polite"></div>
+    </div>
+  </div>
+  <dialog id="crm-dialog" aria-labelledby="dlg-title"></dialog>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/crm.js"></script>
+</body>
+</html>
