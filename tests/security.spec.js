@@ -5,7 +5,7 @@ const path = require('path');
 const { scan } = require('../tools/check-secrets');
 const { validate } = require('../tools/check-cloud');
 
-const PAGES = ['index.html', 'helpdesk.html', 'staff.html', 'crm.html', 'automation.html', 'troubleshoot.html'];
+const PAGES = ['index.html', 'dashboard.html', 'helpdesk.html', 'staff.html', 'crm.html', 'automation.html', 'troubleshoot.html', 'health.html'];
 const root = path.resolve(__dirname, '..');
 
 test('XSS: script-like input is rendered as harmless text everywhere', async ({ page }) => {

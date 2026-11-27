@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>System Health | Northlight Studio</title>
+<meta name="description" content="Northlight Studio system health: build info, browser storage, data schema and automation configuration checks.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/glow.css" id="theme-glow">
+<script src="assets/js/theme.js"></script>
+</head>
+<body data-page="health">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">Operations</span>
+    <h1>System health</h1>
+    <p>Live checks of this demo environment: configuration, browser storage, data schema and automation rules.</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
+    <div id="health-banner" aria-live="polite"></div>
+    <div class="grid two">
+      <div class="card"><div class="row between"><h2>Checks</h2><button class="btn ghost sm" type="button" id="recheck">Run checks again</button></div><div id="health-checks"></div></div>
+      <div class="stack">
+        <div class="card"><h2>Build information</h2><div id="health-build"></div></div>
+        <div class="card"><h2>Stored data</h2><div id="health-data"></div></div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/automation.js"></script>
+<script src="assets/js/health.js"></script>
+</body>
+</html>

@@ -60,7 +60,7 @@
 
   /* ---------- session + view state ---------- */
   const getSession = () => { try { return JSON.parse(sessionStorage.getItem(CFG.sessionKey)); } catch (e) { return null; } };
-  const setSession = (id) => { try { if (id) sessionStorage.setItem(CFG.sessionKey, JSON.stringify({ id, at: Date.now() })); else sessionStorage.removeItem(CFG.sessionKey); } catch (e) { /* ignore */ } };
+  const setSession = (id) => { try { if (id) sessionStorage.setItem(CFG.sessionKey, JSON.stringify({ id, at: Date.now() })); else sessionStorage.removeItem(CFG.sessionKey); } catch (e) { /* ignore */ } window.dispatchEvent(new CustomEvent('nl:change')); }; // lets the top bar profile refresh
   let ready = false, pending = null, loginError = '', timer = null, joinerResult = null;
   const root = $('#staff-root');
   const roleLabel = (r) => CFG.accessRoles[r] || r;
@@ -129,13 +129,38 @@
         h('p', { class: 'small' }, 'Setup URI: ', h('code', null, uri)))));
   }
 
+  function staffDetails(s) {
+    let d = document.getElementById('staff-dialog');
+    if (!d) { d = h('dialog', { id: 'staff-dialog', 'aria-labelledby': 'sd-title' }); document.body.append(d); }
+    mount(d, h('div', { class: 'name-cell' }, NL.avatar(s.name, 'lg'), h('div', null, h('h2', { id: 'sd-title' }, s.name), badge(s.status === 'active' ? 'Active' : 'Leaver', s.status === 'active' ? 'ok' : 'danger'))),
+      h('dl', { class: 'kv' }, [['Email', s.email], ['Job title', s.title], ['Department', s.department], ['Access role', roleLabel(s.accessRole)], ['MFA', s.mfaEnabled ? 'Enabled (TOTP)' : 'Off'], ['Employee ID', s.id],
+        ['Departed', s.departedAt ? NL.fmtDate(s.departedAt) : '—']].flatMap(([k, v]) => [h('dt', null, k), h('dd', null, v)])),
+      h('h3', null, 'Account history'), h('ul', { class: 'timeline' }, (s.events || []).slice().reverse().map((e) => h('li', null, NL.fmtDate(e.at) + ' — ' + e.text))),
+      h('button', { class: 'btn ghost', type: 'button', onclick: () => d.close() }, 'Close'));
+    d.showModal();
+  }
+
   function directory() {
-    const f = h('select', { id: 'dir-dept', onchange: render }, h('option', { value: '' }, 'All departments'), CFG.departments.map((d) => h('option', null, d)));
-    const keep = $('#dir-dept') && $('#dir-dept').value; if (keep) f.value = keep;
-    const rows = store.list('staff').filter((s) => !f.value || s.department === f.value);
-    return h('div', { class: 'card' }, h('div', { class: 'row between' }, h('h2', null, 'Directory'), h('div', { class: 'field' }, h('label', { class: 'sr-only', for: 'dir-dept' }, 'Department'), f)),
-      NL.table([{ label: 'Name', render: (s) => s.name }, { label: 'Email', render: (s) => s.email }, { label: 'Title', render: (s) => s.title }, { label: 'Department', render: (s) => s.department },
-        { label: 'Account', render: (s) => badge(s.status === 'active' ? 'Active' : 'Leaver', s.status === 'active' ? 'ok' : 'danger') }, { label: 'MFA', render: (s) => (s.mfaEnabled ? 'Enabled' : 'Off') }], rows, { caption: 'Staff directory' }));
+    const f = h('select', { id: 'dir-dept' }, h('option', { value: '' }, 'All departments'), CFG.departments.map((d) => h('option', null, d)));
+    const q = h('input', { id: 'dir-q', type: 'search', placeholder: 'Search people', value: new URLSearchParams(location.search).get('q') || '' });
+    const host = h('div', { id: 'dir-table' });
+    const fill = () => {
+      const t = q.value.trim().toLowerCase();
+      const rows = store.list('staff').filter((s) => (!f.value || s.department === f.value) && (!t || [s.name, s.email, s.title].join(' ').toLowerCase().includes(t)));
+      mount(host, NL.table([{ label: 'Name', render: (s) => h('span', { class: 'name-cell' }, NL.avatar(s.name), h('button', { class: 'btn ghost sm', type: 'button', 'aria-label': 'View details for ' + s.name, onclick: () => staffDetails(s) }, s.name)) },
+        { label: 'Email', render: (s) => s.email }, { label: 'Title', render: (s) => s.title }, { label: 'Department', render: (s) => s.department },
+        { label: 'Account', render: (s) => badge(s.status === 'active' ? 'Active' : 'Leaver', s.status === 'active' ? 'ok' : 'danger') }, { label: 'MFA', render: (s) => (s.mfaEnabled ? 'Enabled' : 'Off') }], rows,
+      { caption: 'Staff directory', emptyTitle: 'No employees match', emptyText: 'Try another name or department.' }));
+    };
+    f.addEventListener('change', fill); q.addEventListener('input', fill); fill();
+    return h('div', { class: 'card' }, h('h2', null, 'Directory'),
+      h('div', { class: 'toolbar' }, h('div', { class: 'field' }, h('label', { for: 'dir-q' }, 'Search'), q), h('div', { class: 'field' }, h('label', { for: 'dir-dept' }, 'Department'), f)), host);
+  }
+
+  function overview() {
+    const all = store.list('staff'), stat = (n, l) => h('div', { class: 'card stat' }, h('span', { class: 'num' }, n), h('span', { class: 'label' }, l));
+    return h('div', { class: 'grid', id: 'staff-overview' }, stat(all.length, 'Total employees'), stat(all.filter((s) => s.status === 'active').length, 'Active accounts'),
+      CFG.departments.map((d) => stat(all.filter((s) => s.department === d && s.status === 'active').length, d + ' team')));
   }
 
   function adminPanel(me) {
@@ -187,9 +212,9 @@
 
   function appView(me) {
     return h('div', { class: 'stack', id: 'staff-app' },
-      h('div', { class: 'card row between' }, h('div', null, h('strong', { id: 'whoami' }, me.name), ' · ' + me.title + ' · ', badge(roleLabel(me.accessRole), 'info')),
+      h('div', { class: 'card row between' }, h('div', null, h('strong', { id: 'whoami' }, me.name), ' · ' + me.title + ' (' + me.department + ') · access role: ', badge(roleLabel(me.accessRole), 'info')),
         h('button', { class: 'btn ghost sm', type: 'button', id: 'logout', onclick: () => { setSession(null); render(); } }, 'Sign out')),
-      rolePanel(me), directory());
+      overview(), rolePanel(me), directory());
   }
 
   function render() {

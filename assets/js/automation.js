@@ -147,7 +147,14 @@
     mount($('#auto-log'), NL.table([{ label: 'Time', render: (e) => NL.fmtDate(e.at) }, { label: 'Result', render: (e) => badge(e.level === 'success' ? 'Success' : e.level === 'error' ? 'Error' : 'Info', e.level === 'success' ? 'ok' : e.level === 'error' ? 'danger' : 'info') },
       { label: 'Rule', render: (e) => h('code', null, e.ruleId) }, { label: 'Event details', render: (e) => e.message }, { label: 'Submission', render: (e) => e.correlationId || '—' }], l, { caption: 'Recent automation activity', emptyTitle: 'No activity yet', emptyText: 'Submit an enquiry on the home page.' }));
   }
-  const renderAll = () => { renderStatus(); renderRules(); renderOutbox(); renderLog(); };
+  function renderFlow() {
+    const S = store, website = S.list('leads').filter((l) => l.source === 'Website'), t = S.list('tickets').filter((x) => x.source === 'website');
+    const step = (n, title, count, note) => h('li', null, h('span', { class: 'step' }, 'Step ' + n), h('strong', null, String(count)), h('span', null, title + ' · ' + note));
+    mount($('#auto-flow'), h('ol', { class: 'flow', 'aria-label': 'How an enquiry moves through the system' },
+      step(1, 'Website enquiry', website.length, 'submitted'), step(2, 'CRM lead', website.length, 'created (R1)'), step(3, 'Help desk ticket', t.length, 'created (R2)'),
+      step(4, 'Priority evaluation', t.filter((x) => x.priority === 'P1').length, 'escalated to P1 (R3)'), step(5, 'Outbox alert', S.list('outbox').length, 'simulated (R4)'), step(6, 'Activity log', S.list('logs').length, 'entries')));
+  }
+  const renderAll = () => { renderStatus(); renderFlow(); renderRules(); renderOutbox(); renderLog(); };
 
   async function runSample(kind) {
     const r = await NL.automation.processEnquiry(Object.assign({ submissionId: 'sub-' + crypto.randomUUID() }, SAMPLES[kind]));

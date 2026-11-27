@@ -84,6 +84,15 @@ All asset paths are relative, so the site works under the `/northlight-OK/` sub-
 - **Automation.** `rules.json` drives: create lead → create P3 ticket → urgent condition → P1 and simulated outbox alert → log with timestamp and rule ID. Handles missing/invalid rules, missing fields and duplicate submissions. Non-core rules can be switched off on the dashboard.
 - **Data.** Global **Export all data** button (footer) downloads one JSON file locally; nothing is uploaded. Password hashes and MFA secrets are excluded from the export. **Reset demo data** restores the seed.
 
+## User interface
+
+- **Application shell** on every internal page: sidebar (Dashboard, Help Desk, Staff Directory, CRM, Automation, Troubleshooting, System Health), top bar with breadcrumbs, working global search (tickets, leads, accounts, staff), notification bell with live counts, profile of the signed-in demo user, and a theme toggle. The public website (`index.html`) keeps its own top navigation.
+- **Dashboard** (`dashboard.html`): all numbers come from the shared store (open and critical tickets, employees, leads, opportunities, automation status, pipeline, recent activity, quick actions).
+- **System Health** (`health.html`): real PASS/FAIL checks of configuration, storage, schema and rules.
+- **Themes:** "glow" (dark, luminous, default) and "light" (clean neutral). The choice is saved in the browser; the glow theme is a separate stylesheet (`assets/css/glow.css`).
+- **Responsive:** sidebar becomes an off-canvas menu below 1000 px, and tables become cards below 720 px.
+- **Screenshots:** `node tools/ui-screenshots.js [glow|light]` opens every page in Chromium and saves desktop (1440x900) and mobile (390x844) images to `screenshots/ui/`.
+
 ## Demo accounts
 
 > **PUBLIC demo-only credentials. Never use them or this password pattern in any real system.**

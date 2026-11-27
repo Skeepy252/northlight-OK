@@ -21,7 +21,12 @@
 
   function render() {
     const cur = result ? 5 : TREE[path[path.length - 1]].step;
-    mount($('#ladder'), LADDER.map((l, i) => h('li', { class: result && result.failStep === i ? 'current' : i < cur ? 'done' : i === cur && !result ? 'current' : null }, l)));
+    mount($('#ladder'), LADDER.map((l, i) => {
+      const upto = result ? (result.ok ? LADDER.length : result.failStep) : cur; // steps after a failure are not tested yet
+      const failed = !!result && !result.ok && result.failStep === i, passed = i < upto;
+      return h('li', { class: failed ? 'current' : passed ? 'done' : i === cur && !result ? 'current' : null, 'data-state': failed ? 'fail' : passed ? 'pass' : 'pending' },
+        l, h('span', { class: 'ladder-state' }, failed ? '✗ FAIL' : passed ? '✓ PASS' : ''));
+    }));
     if (result) {
       mount($('#step-card'), h('div', { class: 'result card', id: 'result' },
         h('span', { class: 'eyebrow' }, result.ok ? 'All good' : 'Likely cause'), h('h2', null, result.cause), h('p', null, h('strong', null, 'Recommended next action: '), result.action),

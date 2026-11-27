@@ -29,7 +29,9 @@ test.describe('website', () => {
     for (const [label, href] of links) {
       const res = await page.goto(href);
       expect(res.status(), href).toBe(200);
-      await expect(page.locator('#main-nav a[aria-current=page]')).toHaveText(label);
+      // public site uses the top nav; application pages use the sidebar (which labels Staff as "Staff Directory")
+      const active = label === 'Home' ? page.locator('#main-nav a[aria-current=page]') : page.locator('#side-nav a[aria-current=page]');
+      await expect(active).toContainText(label);
     }
   });
 

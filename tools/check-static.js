@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const root = path.resolve(__dirname, '..');
-const PAGES = ['index', 'helpdesk', 'staff', 'crm', 'automation', 'troubleshoot'].map((p) => p + '.html');
+const PAGES = ['index', 'dashboard', 'helpdesk', 'staff', 'crm', 'automation', 'troubleshoot', 'health'].map((p) => p + '.html');
 const errors = [];
 const err = (f, m) => errors.push(`${f}: ${m}`);
 

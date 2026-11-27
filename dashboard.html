@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Dashboard | Northlight Studio</title>
+<meta name="description" content="Northlight Studio operations dashboard: tickets, staff, CRM pipeline, automation status and recent activity from live shared data.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/glow.css" id="theme-glow">
+<script src="assets/js/theme.js"></script>
+</head>
+<body data-page="dashboard">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="app-header"></header>
+<main id="main">
+  <section class="page-head"><div class="container">
+    <span class="eyebrow">Company overview</span>
+    <h1>Dashboard</h1>
+    <p id="welcome">Loading overview…</p>
+  </div></section>
+  <div class="container page-body stack">
+    <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
+    <div class="grid" id="dash-stats"></div>
+    <div class="card"><h2>Sales pipeline</h2><div id="dash-pipeline"></div></div>
+    <div class="grid two">
+      <div class="card"><h2>Recent activity</h2><div id="dash-feed" aria-live="polite"></div></div>
+      <div class="stack">
+        <div class="card"><h2>Quick actions</h2><div class="quick" id="dash-quick"></div></div>
+        <div class="card"><h2>Open tickets by priority</h2><div id="dash-prio"></div></div>
+        <div class="card"><h2>Automation</h2><div id="dash-auto"></div></div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="site-footer" id="app-footer"></footer>
+<script src="config.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/automation.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

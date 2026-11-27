@@ -8,6 +8,8 @@
 <meta name="description" content="Northlight Studio automation dashboard: configuration-driven rules, simulated outbox and execution log. Fictional demo.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/glow.css" id="theme-glow">
+<script src="assets/js/theme.js"></script>
 </head>
 <body data-page="automation">
 <a class="skip" href="#main">Skip to content</a>
@@ -21,6 +23,7 @@
   <div class="container page-body stack">
     <noscript><div class="alert alert-error">This application needs JavaScript.</div></noscript>
     <div class="grid two"><div id="auto-status"></div><div id="auto-health"></div></div>
+    <div class="card"><h2>Enquiry journey</h2><p class="hint">Live counts from the shared data. The outbox is a demonstration queue: no email is ever sent.</p><div id="auto-flow"></div></div>
     <div class="card"><h2>Configured rules</h2><div id="auto-rules"></div></div>
     <div class="card"><h2>Try it</h2>
       <p>Send a sample enquiry through the same engine the website uses (creates a real demo lead and ticket in this browser).</p>

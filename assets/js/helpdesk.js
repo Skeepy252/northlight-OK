@@ -28,7 +28,7 @@
       { label: 'ID', render: (t) => h('strong', null, t.id) },
       { label: 'Priority', render: (t) => NL.priorityBadge(t.priority) },
       { label: 'Issue', render: (t) => (t.description.length > 90 ? t.description.slice(0, 90) + '…' : t.description) },
-      { label: 'Requester', render: (t) => t.requester + ' (' + t.department + ')' },
+      { label: 'Requester', render: (t) => h('span', { class: 'name-cell' }, NL.avatar(t.requester), h('span', null, t.requester + ' (' + t.department + ')')) },
       { label: 'Status', render: (t) => badge(t.status, statusKind[t.status]) },
       { label: 'Response target', render: (t) => (t.status === 'Resolved' ? '—' : h('span', null, NL.fmtDate(t.dueAt), ' ',
         tickets.isOverdue(t) ? badge('OVERDUE ' + NL.relTime(t.dueAt).replace('overdue by ', ''), 'danger') : h('span', { class: 'hint' }, '(' + NL.relTime(t.dueAt) + ')'))) },
@@ -110,7 +110,11 @@
   ['#f-search', '#f-status', '#f-priority'].forEach((s) => $(s).addEventListener('input', render));
   $('#new-ticket').addEventListener('click', newTicket);
   $('#export-tickets').addEventListener('click', () => NL.download('northlight-tickets-' + new Date().toISOString().slice(0, 10) + '.json', { exportedAt: new Date().toISOString(), tickets: store.list('tickets') }));
+  const qs = new URLSearchParams(location.search); // deep links from dashboard / global search / notifications
+  if (qs.get('q')) $('#f-search').value = qs.get('q');
+  if (['P1', 'P2', 'P3'].includes(qs.get('priority'))) $('#f-priority').value = qs.get('priority');
   store.onChange(render);
   render();
+  if (qs.get('new')) newTicket();
   setInterval(render, 60000); // keep overdue labels current
 })();

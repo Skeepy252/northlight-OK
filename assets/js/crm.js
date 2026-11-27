@@ -18,6 +18,7 @@
     mount($('#crm-stats'), stat(store.list('leads').length, 'Total leads', 'st-leads'), stat(store.list('accounts').filter((a) => a.status === 'Active').length, 'Active accounts', 'st-accounts'),
       stat(opps.filter((o) => !['Won', 'Lost'].includes(o.stage)).length, 'Open opportunities', 'st-open'), stat(opps.filter((o) => o.stage === 'Won').length, 'Won opportunities', 'st-won'),
       stat(store.list('cases').filter((c) => c.status !== 'Closed').length, 'Open support cases', 'st-cases'));
+    mount($('#crm-pipeline'), NL.pipelineStrip());
   }
   function chart() {
     const opps = store.list('opportunities');
@@ -88,8 +89,8 @@
   /* ---------- tabs ---------- */
   const TABS = {
     leads: { label: 'Leads', filter: LEAD_STATUS, field: 'status', btn: 'New lead',
-      cols: () => [{ label: 'ID', render: (l) => h('strong', null, l.id) }, { label: 'Name', render: (l) => l.name }, { label: 'Company', render: (l) => l.company }, { label: 'Email', render: (l) => l.email },
-        { label: 'Source', render: (l) => l.source }, { label: 'Status', render: (l) => badge(l.status, l.status === 'Converted' ? 'ok' : l.status === 'Disqualified' ? 'muted' : 'info') }, { label: 'Created', render: (l) => NL.fmtDay(l.createdAt) }, { label: 'Notes', render: (l) => l.notes || '' },
+      cols: () => [{ label: 'ID', render: (l) => h('strong', null, l.id) }, { label: 'Name', render: (l) => h('span', { class: 'name-cell' }, NL.avatar(l.name), l.name) }, { label: 'Company', render: (l) => l.company }, { label: 'Email', render: (l) => l.email },
+        { label: 'Source', render: (l) => l.source }, { label: 'Status', render: (l) => badge(l.status, l.status === 'Converted' ? 'ok' : l.status === 'Disqualified' ? 'muted' : 'info') }, { label: 'Created', render: (l) => NL.fmtDay(l.createdAt) }, { label: 'Notes', render: (l) => h('span', { class: 'clamp', title: l.notes || '' }, l.notes || '') },
         { label: 'Actions', render: (l) => h('div', { class: 'actions' }, h('button', { class: 'btn ghost sm', type: 'button', 'aria-label': 'Edit lead ' + l.id, onclick: () => editLead(l) }, 'Edit'),
           h('button', { class: 'btn sm', type: 'button', 'aria-label': 'Convert lead ' + l.id, disabled: l.status === 'Converted', onclick: () => convert(l.id) }, 'Convert')) }] },
     accounts: { label: 'Accounts', cols: () => [{ label: 'Company', render: (a) => a.name }, { label: 'Industry', render: (a) => a.industry }, { label: 'Contact', render: (a) => a.contactEmail }, { label: 'Status', render: (a) => badge(a.status, 'ok') }, { label: 'Notes', render: (a) => a.notes }] },
@@ -125,5 +126,9 @@
   $('#c-search').addEventListener('input', list); $('#c-filter').addEventListener('change', list);
   $('#c-new').addEventListener('click', () => (tab === 'leads' ? editLead() : editCase()));
   store.onChange(() => { if (!dlg.open) render(); });
+  const qs = new URLSearchParams(location.search); // deep links from dashboard / global search / notifications
+  if (TABS[qs.get('tab')]) tab = qs.get('tab');
   render();
+  if (qs.get('q')) { $('#c-search').value = qs.get('q'); list(); }
+  if (qs.get('new') === 'lead') { tab = 'leads'; render(); editLead(); }
 })();
